@@ -1,4 +1,17 @@
 const btn = document.querySelector("#submit");
+const title = document.querySelector("#title");
+const author = document.querySelector("#author");
+const pages = document.querySelector("#pages");
+const read = document.querySelector("#read");
+
+btn.addEventListener("click", (e) => {
+  e.preventDefault();
+  addBookToLibrary(title.value, author.value, pages.value, read.checked);
+  title.value = "";
+  author.value = "";
+  pages.value = "";
+  read.checked = false;
+});
 
 function Book(title, author, pages, read) {
   this.title = title;
@@ -16,13 +29,8 @@ const warAndPeace = new Book("War and Peace", "Leo Tolstoy", 1225, true);
 
 let myLibrary = [theHobbit, warAndPeace];
 
-function addBookToLibrary() {
-  const newBook = new Book(
-    prompt("Book title:"),
-    prompt("Book author:"),
-    prompt("Length:"),
-    prompt("Read:")
-  );
+function addBookToLibrary(title, author, pages, read) {
+  const newBook = new Book(title, author, pages, read);
 
   myLibrary.push(newBook);
 }
