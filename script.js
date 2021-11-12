@@ -3,15 +3,7 @@ const title = document.querySelector("#title");
 const author = document.querySelector("#author");
 const pages = document.querySelector("#pages");
 const read = document.querySelector("#read");
-
-btn.addEventListener("click", (e) => {
-  e.preventDefault();
-  addBookToLibrary(title.value, author.value, pages.value, read.checked);
-  title.value = "";
-  author.value = "";
-  pages.value = "";
-  read.checked = false;
-});
+const bookList = document.querySelector("ul");
 
 function Book(title, author, pages, read) {
   this.title = title;
@@ -34,3 +26,26 @@ function addBookToLibrary(title, author, pages, read) {
 
   myLibrary.push(newBook);
 }
+
+myLibrary.forEach((book) => {
+  console.log(book);
+  let li = document.createElement("li");
+  let bookDescrtiption = `${book.title} by ${book.author}, ${book.pages} pages, ${book.read}`;
+  li.innerText = bookDescrtiption;
+  bookList.appendChild(li);
+});
+
+btn.addEventListener("click", (e) => {
+  e.preventDefault();
+  addBookToLibrary(title.value, author.value, +pages.value, read.checked);
+
+  let li = document.createElement("li");
+  let bookDescrtiption = `${title.value} by ${author.value}, ${pages.value} pages, ${read.checked}`;
+  li.innerText = bookDescrtiption;
+  bookList.appendChild(li);
+
+  title.value = "";
+  author.value = "";
+  pages.value = "";
+  read.checked = false;
+});
