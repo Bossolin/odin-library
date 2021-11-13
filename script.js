@@ -56,6 +56,8 @@ myLibrary.forEach((book, index) => {
 
 submitBtn.addEventListener("click", (e) => {
   e.preventDefault();
+  if (myLibrary.some((book) => book.title === title.value))
+    return alert("Book already exists");
   addBookToLibrary(title.value, author.value, +pages.value, read.checked);
 
   let li = document.createElement("li");
