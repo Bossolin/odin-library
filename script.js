@@ -16,6 +16,13 @@ function Book(title, author, pages, read) {
   this.read = read;
 }
 
+Book.prototype.delete = function () {
+  myLibrary = myLibrary.filter((book) => book.title != this.title);
+  const bookId = document.querySelector(`[data-book-index="${this.title}"]`);
+
+  bookList.removeChild(bookId.parentNode);
+};
+
 Book.prototype.finished = function () {
   const bookRead = document.querySelector(`[data-read="${this.title}"]`);
 
@@ -63,25 +70,17 @@ const refresh = function () {
     bookRead.addEventListener("click", () => {
       book.finished();
     });
-  });
-};
 
-refresh();
-
-const removeBook = () => {
-  const removeBtns = document.querySelectorAll(".remove-btn");
-  removeBtns.forEach((button) => {
-    button.addEventListener("click", (e) => {
-      const node = e.target.dataset.bookIndex;
-      myLibrary = myLibrary.filter((book) => book.title != node);
-      const bookId = document.querySelector(`[data-book-index="${node}"]`);
-
-      bookList.removeChild(bookId.parentNode);
+    const removeBook = document.querySelector(
+      `[data-book-index="${book.title}"]`
+    );
+    removeBook.addEventListener("click", () => {
+      book.delete();
     });
   });
 };
 
-removeBook();
+refresh();
 
 submitBtn.addEventListener("click", (e) => {
   e.preventDefault();
@@ -90,7 +89,6 @@ submitBtn.addEventListener("click", (e) => {
   addBookToLibrary(title.value, author.value, +pages.value, read.checked);
 
   refresh();
-  removeBook();
 
   title.value = "";
   author.value = "";
