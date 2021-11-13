@@ -18,8 +18,8 @@ function Book(title, author, pages, read) {
 
 Book.prototype.delete = function () {
   myLibrary = myLibrary.filter((book) => book.title != this.title);
-  const bookId = document.querySelector(`[data-book-index="${this.title}"]`);
 
+  const bookId = document.querySelector(`[data-book-index="${this.title}"]`);
   bookList.removeChild(bookId.parentNode);
 };
 
@@ -40,8 +40,14 @@ Book.prototype.finished = function () {
 
 const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", 295, false);
 const warAndPeace = new Book("War and Peace", "Leo Tolstoy", 1225, true);
+const thinkLikeAPro = new Book(
+  "Think Like A Programmer",
+  "V. Anton Spraul",
+  256,
+  false
+);
 
-let myLibrary = [theHobbit, warAndPeace];
+let myLibrary = [theHobbit, warAndPeace, thinkLikeAPro];
 
 function addBookToLibrary(title, author, pages, read) {
   const newBook = new Book(title, author, pages, read);
