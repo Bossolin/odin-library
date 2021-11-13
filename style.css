@@ -62,3 +62,11 @@
   opacity: 1;
   pointer-events: all;
 }
+
+.read {
+  background-color: green;
+}
+
+.not-read {
+  background-color: red;
+}

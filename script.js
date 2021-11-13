@@ -9,21 +9,6 @@ const closeAddBookBtn = document.querySelector(".close-button");
 const overlay = document.getElementById("overlay");
 const modal = document.querySelector(".modal");
 
-addBookBtn.addEventListener("click", () => {
-  modal.classList.add("active");
-  overlay.classList.add("active");
-});
-
-closeAddBookBtn.addEventListener("click", () => {
-  modal.classList.remove("active");
-  overlay.classList.remove("active");
-});
-
-overlay.addEventListener("click", () => {
-  modal.classList.remove("active");
-  overlay.classList.remove("active");
-});
-
 function Book(title, author, pages, read) {
   this.title = title;
   this.author = author;
@@ -31,8 +16,19 @@ function Book(title, author, pages, read) {
   this.read = read;
 }
 
-Book.prototype.info = function () {
-  return `${this.title} by ${this.author}, ${this.pages} pages, ${this.read}`;
+Book.prototype.finished = function () {
+  const bookRead = document.querySelector(`[data-read="${this.title}"]`);
+
+  if (this.read) {
+    bookRead.innerText = "Not Read";
+    bookRead.classList.add("not-read");
+    bookRead.classList.remove("read");
+  } else {
+    bookRead.innerText = "Read";
+    bookRead.classList.add("read");
+    bookRead.classList.remove("not-read");
+  }
+  return (this.read = !this.read);
 };
 
 const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", 295, false);
@@ -46,34 +42,31 @@ function addBookToLibrary(title, author, pages, read) {
   myLibrary.push(newBook);
 }
 
-myLibrary.forEach((book, index) => {
-  console.log(index);
-  let li = document.createElement("li");
-  let bookDescrtiption = `${book.title} by ${book.author}, ${book.pages} pages, ${book.read} <button class="remove-btn" data-book-index='${book.title}'>Remove</button>`;
-  li.innerHTML = bookDescrtiption;
-  bookList.appendChild(li);
-});
+const refresh = function () {
+  bookList.innerHTML = "";
 
-submitBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  if (myLibrary.some((book) => book.title === title.value))
-    return alert("Book already exists");
-  addBookToLibrary(title.value, author.value, +pages.value, read.checked);
+  myLibrary.forEach((book) => {
+    const bookCard = document.createElement("li");
+    bookCard.innerHTML = `<h3>${book.title}</h3><h4>by ${book.author}</h4><h4>${
+      book.pages
+    } pages</h4><Button data-read="${book.title}" class="${
+      book.read ? "read" : "not-read"
+    }">${
+      book.read ? "Read" : "Not Read"
+    }</Button><button class="remove-btn" data-book-index="${
+      book.title
+    }">Remove</button>`;
 
-  let li = document.createElement("li");
-  let bookDescrtiption = `${title.value} by ${author.value}, ${pages.value} pages, ${read.checked} <button class="remove-btn" data-book-index='${title.value}'>Remove</button>`;
-  li.innerHTML = bookDescrtiption;
-  bookList.appendChild(li);
-  removeBook();
+    bookList.appendChild(bookCard);
 
-  title.value = "";
-  author.value = "";
-  pages.value = "";
-  read.checked = false;
+    const bookRead = document.querySelector(`[data-read="${book.title}"]`);
+    bookRead.addEventListener("click", () => {
+      book.finished();
+    });
+  });
+};
 
-  modal.classList.remove("active");
-  overlay.classList.remove("active");
-});
+refresh();
 
 const removeBook = () => {
   const removeBtns = document.querySelectorAll(".remove-btn");
@@ -89,3 +82,37 @@ const removeBook = () => {
 };
 
 removeBook();
+
+submitBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  if (myLibrary.some((book) => book.title === title.value))
+    return alert("Book already exists");
+  addBookToLibrary(title.value, author.value, +pages.value, read.checked);
+
+  refresh();
+  removeBook();
+
+  title.value = "";
+  author.value = "";
+  pages.value = "";
+  read.checked = false;
+
+  modal.classList.remove("active");
+  overlay.classList.remove("active");
+});
+
+addBookBtn.addEventListener("click", () => {
+  modal.classList.add("active");
+  overlay.classList.add("active");
+  title.focus();
+});
+
+closeAddBookBtn.addEventListener("click", () => {
+  modal.classList.remove("active");
+  overlay.classList.remove("active");
+});
+
+overlay.addEventListener("click", () => {
+  modal.classList.remove("active");
+  overlay.classList.remove("active");
+});
