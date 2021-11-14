@@ -17,10 +17,11 @@ function Book(title, author, pages, read) {
 }
 
 Book.prototype.delete = function () {
-  myLibrary = myLibrary.filter((book) => book.title != this.title);
+  myLocalLibrary = myLocalLibrary.filter((book) => book.title != this.title);
 
   const bookId = document.querySelector(`[data-book-index="${this.title}"]`);
   bookList.removeChild(bookId.parentNode);
+  setLocalData();
 };
 
 Book.prototype.finished = function () {
@@ -35,7 +36,8 @@ Book.prototype.finished = function () {
     bookRead.classList.add("read");
     bookRead.classList.remove("not-read");
   }
-  return (this.read = !this.read);
+  this.read = !this.read;
+  setLocalData();
 };
 
 const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", 295, false);
@@ -49,16 +51,29 @@ const thinkLikeAPro = new Book(
 
 let myLibrary = [theHobbit, warAndPeace, thinkLikeAPro];
 
+let myLocalLibrary = JSON.parse(localStorage.getItem("myLibrary"));
+
+const setLocalData = function () {
+  if (myLocalLibrary === null) {
+    localStorage.setItem("myLibrary", JSON.stringify(myLibrary));
+    myLocalLibrary = JSON.parse(localStorage.getItem("myLibrary"));
+  }
+  localStorage.setItem("myLibrary", JSON.stringify(myLocalLibrary));
+};
+setLocalData();
+
 function addBookToLibrary(title, author, pages, read) {
   const newBook = new Book(title, author, pages, read);
 
-  myLibrary.push(newBook);
+  myLocalLibrary.push(newBook);
+  setLocalData();
 }
 
 const refresh = function () {
   bookList.innerHTML = "";
 
-  myLibrary.forEach((book) => {
+  myLocalLibrary.forEach((book) => {
+    Object.setPrototypeOf(book, Book.prototype);
     const bookCard = document.createElement("li");
     bookCard.innerHTML = `<h3>${book.title}</h3><h4>by ${book.author}</h4><h4>${
       book.pages
@@ -90,7 +105,7 @@ refresh();
 
 submitBtn.addEventListener("click", (e) => {
   e.preventDefault();
-  if (myLibrary.some((book) => book.title === title.value))
+  if (myLocalLibrary.some((book) => book.title === title.value))
     return alert("Book already exists");
   addBookToLibrary(title.value, author.value, +pages.value, read.checked);
 
