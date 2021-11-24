@@ -9,36 +9,38 @@ const closeAddBookBtn = document.querySelector(".close-button");
 const overlay = document.getElementById("overlay");
 const modal = document.querySelector(".modal");
 
-function Book(title, author, pages, read) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
-}
-
-Book.prototype.delete = function () {
-  myLocalLibrary = myLocalLibrary.filter((book) => book.title != this.title);
-
-  const bookId = document.querySelector(`[data-book-index="${this.title}"]`);
-  bookList.removeChild(bookId.parentNode);
-  setLocalData();
-};
-
-Book.prototype.finished = function () {
-  const bookRead = document.querySelector(`[data-read="${this.title}"]`);
-
-  if (this.read) {
-    bookRead.innerText = "Not Read";
-    bookRead.classList.add("not-read");
-    bookRead.classList.remove("read");
-  } else {
-    bookRead.innerText = "Read";
-    bookRead.classList.add("read");
-    bookRead.classList.remove("not-read");
+class Book {
+  constructor(title, author, pages, read) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
   }
-  this.read = !this.read;
-  setLocalData();
-};
+
+  delete() {
+    myLocalLibrary = myLocalLibrary.filter((book) => book.title != this.title);
+
+    const bookId = document.querySelector(`[data-book-index="${this.title}"]`);
+    bookList.removeChild(bookId.parentNode);
+    setLocalData();
+  }
+
+  finished() {
+    const bookRead = document.querySelector(`[data-read="${this.title}"]`);
+    console.log();
+    if (this.read) {
+      bookRead.innerText = "Not Read";
+      bookRead.classList.add("not-read");
+      bookRead.classList.remove("read");
+    } else {
+      bookRead.innerText = "Read";
+      bookRead.classList.add("read");
+      bookRead.classList.remove("not-read");
+    }
+    this.read = !this.read;
+    setLocalData();
+  }
+}
 
 const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", 295, false);
 const warAndPeace = new Book("War and Peace", "Leo Tolstoy", 1225, true);
@@ -73,7 +75,8 @@ const refresh = function () {
   bookList.innerHTML = "";
 
   myLocalLibrary.forEach((book) => {
-    Object.setPrototypeOf(book, Book.prototype);
+    Object.setPrototypeOf(book, new Book());
+
     const bookCard = document.createElement("li");
     bookCard.innerHTML = `<h3>${book.title}</h3><h4>by ${book.author}</h4><h4>${
       book.pages
