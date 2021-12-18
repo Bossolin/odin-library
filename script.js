@@ -108,6 +108,13 @@ refresh();
 
 submitBtn.addEventListener("click", (e) => {
   e.preventDefault();
+  if (title.value === "") {
+    return alert("Add book title");
+  } else if (author.value === "") {
+    return alert("Add author of the book");
+  } else if (+pages.value === 0) {
+    return alert("Add book length");
+  }
   if (myLocalLibrary.some((book) => book.title === title.value))
     return alert("Book already exists");
   addBookToLibrary(title.value, author.value, +pages.value, read.checked);
